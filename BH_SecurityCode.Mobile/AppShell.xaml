@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="BH_SecurityCode.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:BH_SecurityCode.Mobile.Views"
+    Shell.FlyoutBehavior="Disabled">
+
+    <!--  로그인 (탭 없음)  -->
+    <ShellContent
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="login"
+        Shell.NavBarIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+
+    <!--  본 화면 — 데스크톱 좌측 메뉴 대신 하단 탭 3개  -->
+    <TabBar Route="main">
+        <ShellContent
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Icon="tab_home.png"
+            Route="home"
+            Title="홈" />
+        <ShellContent
+            ContentTemplate="{DataTemplate views:SearchPage}"
+            Icon="tab_search.png"
+            Route="search"
+            Title="검색" />
+        <ShellContent
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Icon="tab_settings.png"
+            Route="settings"
+            Title="설정" />
+    </TabBar>
+
+</Shell>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Android": {
+      "commandName": "AndroidDevice",
+      "nativeDebugging": false
+    }
+  }
+}

@@ -1,0 +1,59 @@
+<UserControl x:Class="BH_SecurityCode.Views.BankCode.SerialTableControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--  DataContext: SerialCells 를 가진 ViewModel. 정방향 번호 / 일련번호 / 역방향 번호 3단 표  -->
+    <Border Background="{StaticResource BgSurfaceBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="6"
+            Padding="10,8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <TextBlock Text="정방향" Style="{StaticResource MutedText}" FontSize="11" Height="20" VerticalAlignment="Center" />
+                <TextBlock Text="일련번호" FontWeight="SemiBold" Height="34" Padding="0,8,0,0" />
+                <TextBlock Text="역방향" Style="{StaticResource MutedText}" FontSize="11" Height="20" />
+            </StackPanel>
+
+            <ItemsControl Grid.Column="1" ItemsSource="{Binding SerialCells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" Columns="10" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Asc}"
+                                       Style="{StaticResource MutedText}"
+                                       FontSize="11"
+                                       Height="20"
+                                       HorizontalAlignment="Center" />
+                            <Button Style="{StaticResource ToolButton}"
+                                    Content="{Binding Display}"
+                                    Command="{Binding ToggleCommand}"
+                                    Height="34"
+                                    Padding="0"
+                                    Margin="1,0"
+                                    FontFamily="{StaticResource MonoFont}"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Background="{StaticResource BgInputBrush}"
+                                    IsEnabled="{Binding HasValue}" />
+                            <TextBlock Text="{Binding Desc}"
+                                       Style="{StaticResource MutedText}"
+                                       FontSize="11"
+                                       Height="20"
+                                       HorizontalAlignment="Center"
+                                       Padding="0,4,0,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

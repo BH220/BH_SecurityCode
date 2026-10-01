@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.SearchPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:SearchViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!--  ── 검색 입력 ──  -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,18,20,12" Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Grid.Column="0"
+                    Style="{StaticResource TextTitle}"
+                    Text="통합 검색"
+                    VerticalOptions="Center" />
+                <Border
+                    Grid.Column="1"
+                    IsVisible="{Binding HasSearched}"
+                    Style="{StaticResource PillAccent}">
+                    <Label Style="{StaticResource TextAccent}" Text="{Binding ResultCount, StringFormat='{0}건'}" />
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource InputShell}">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Path
+                        Grid.Column="0"
+                        Data="{x:Static m:Icons.Search}"
+                        HeightRequest="18"
+                        Style="{StaticResource IconMuted}"
+                        WidthRequest="18" />
+                    <Entry
+                        Grid.Column="1"
+                        ClearButtonVisibility="WhileEditing"
+                        Placeholder="보안코드 · 통장 · 카드 · 신분증 · 계정"
+                        Text="{Binding Keyword}" />
+                </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <!--  ── 결과 ──  -->
+        <CollectionView
+            Grid.Row="1"
+            IsGrouped="True"
+            ItemsSource="{Binding Groups}"
+            SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="8" Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:SearchGroup">
+                    <Grid
+                        Padding="20,14,20,8"
+                        ColumnDefinitions="Auto,*,Auto"
+                        ColumnSpacing="9">
+                        <Path
+                            Grid.Column="0"
+                            Data="{Binding Meta.Icon}"
+                            HeightRequest="17"
+                            Stroke="{Binding Meta.Accent}"
+                            StrokeLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="1.7"
+                            WidthRequest="17"
+                            Aspect="Uniform"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Text="{Binding Title}"
+                            TextColor="{Binding Meta.Accent}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="2"
+                            Style="{StaticResource TextMicro}"
+                            Text="{Binding CountText}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:VaultRowViewModel">
+                    <Border Margin="20,0" Style="{StaticResource CardFlat}">
+                        <Grid
+                            Padding="15,13"
+                            ColumnDefinitions="*,Auto,Auto"
+                            ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                <Label Style="{StaticResource TextBodyStrong}" Text="{Binding Title}" />
+                                <Label Style="{StaticResource TextCaption}" Text="{Binding Subtitle}" />
+                                <Label
+                                    IsVisible="{Binding HasValue}"
+                                    Style="{StaticResource TextMono}"
+                                    FontSize="13"
+                                    Text="{Binding DisplayValue}" />
+                            </VerticalStackLayout>
+
+                            <Border Grid.Column="1" Style="{StaticResource Pill}" VerticalOptions="Start">
+                                <Label
+                                    FontSize="11.5"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding OwnerName}" />
+                            </Border>
+
+                            <Path
+                                Grid.Column="2"
+                                Data="{x:Static m:Icons.ChevronRight}"
+                                Style="{StaticResource IconChevron}" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=OpenCommand, x:DataType=vm:SearchViewModel}" CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView BackgroundColor="Transparent" Color="Transparent" HeightRequest="24" />
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <!--  ── 안내 ──  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="32,0"
+            IsVisible="{Binding ShowHint}"
+            Spacing="10"
+            VerticalOptions="Center">
+            <Path
+                Data="{x:Static m:Icons.Search}"
+                HeightRequest="46"
+                Opacity="0.3"
+                Style="{StaticResource IconMuted}"
+                WidthRequest="46"
+                HorizontalOptions="Center" />
+            <Label
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextCallout}"
+                Text="이름 · 소유자 · 은행 · 번호로&#10;다섯 종류를 한 번에 찾습니다" />
+        </VerticalStackLayout>
+
+        <!--  ── 서버 오류 ──  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="32,0"
+            IsVisible="{Binding HasError}"
+            Spacing="14"
+            VerticalOptions="Center">
+            <Path
+                Data="{x:Static m:Icons.Warning}"
+                HeightRequest="42"
+                Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                StrokeLineCap="Round"
+                StrokeLineJoin="Round"
+                StrokeThickness="1.6"
+                WidthRequest="42"
+                Aspect="Uniform"
+                HorizontalOptions="Center" />
+            <Label
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextCallout}"
+                Text="{Binding ErrorText}" />
+            <Button
+                Command="{Binding RetryCommand}"
+                HorizontalOptions="Center"
+                Style="{StaticResource ButtonSecondary}"
+                Text="다시 시도" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            IsVisible="{Binding ShowEmpty}"
+            Spacing="10"
+            VerticalOptions="Center">
+            <Path
+                Data="{x:Static m:Icons.Close}"
+                HeightRequest="38"
+                Opacity="0.3"
+                Style="{StaticResource IconMuted}"
+                WidthRequest="38"
+                HorizontalOptions="Center" />
+            <Label
+                HorizontalOptions="Center"
+                Style="{StaticResource TextCallout}"
+                Text="검색 결과가 없습니다" />
+        </VerticalStackLayout>
+
+        <!--  토스트  -->
+        <Border
+            Grid.Row="1"
+            Margin="24,0,24,22"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

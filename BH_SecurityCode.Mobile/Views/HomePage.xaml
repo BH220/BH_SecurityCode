@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:HomeViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+            <ScrollView>
+                <VerticalStackLayout Padding="20,18,20,28" Spacing="22">
+
+                    <!--  ── 인사 + 세션 ──  -->
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Style="{StaticResource TextCallout}" Text="{Binding Greeting}" />
+                            <Label Style="{StaticResource TextTitle}" Text="{Binding Session.UserName, StringFormat='{0} 님'}" />
+                        </VerticalStackLayout>
+
+                        <Border Grid.Column="1" Style="{StaticResource PillAccent}" Padding="12,7">
+                            <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Clock}"
+                                    HeightRequest="15"
+                                    Style="{StaticResource IconAccent}"
+                                    WidthRequest="15" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource TextAccent}"
+                                    Text="{Binding Session.RemainingText}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ExtendCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </Grid>
+
+                    <!--  ── 요약 ──  -->
+                    <Border Padding="18" StrokeShape="RoundRectangle 20" StrokeThickness="0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="#5A66E0" />
+                                <GradientStop Offset="1" Color="#33409E" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Opacity="0.75"
+                                Style="{StaticResource TextMicro}"
+                                Text="보관 중인 항목"
+                                TextColor="White" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="32"
+                                Text="{Binding TotalCount, StringFormat='{0}건'}"
+                                TextColor="White" />
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                LineBreakMode="TailTruncation"
+                                Opacity="0.8"
+                                Style="{StaticResource TextCaption}"
+                                Text="{Binding ServerText}"
+                                TextColor="White" />
+
+                            <Path
+                                Grid.Row="0"
+                                Grid.RowSpan="3"
+                                Grid.Column="1"
+                                Data="{x:Static m:Icons.Lock}"
+                                HeightRequest="44"
+                                Opacity="0.35"
+                                Stroke="White"
+                                StrokeLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1.4"
+                                WidthRequest="44"
+                                Aspect="Uniform"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!--  ── 서버 오류 ──  -->
+                    <Border IsVisible="{Binding HasError}" Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Warning}"
+                                    HeightRequest="20"
+                                    Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                                    StrokeLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeThickness="1.7"
+                                    WidthRequest="20"
+                                    Aspect="Uniform"
+                                    VerticalOptions="Start" />
+                                <Label
+                                    Grid.Column="1"
+                                    LineBreakMode="WordWrap"
+                                    Style="{StaticResource TextBody}"
+                                    Text="{Binding ErrorText}" />
+                            </Grid>
+                            <Button
+                                Command="{Binding RetryCommand}"
+                                Style="{StaticResource ButtonSecondary}"
+                                Text="다시 시도" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!--  ── 보관함 ──  -->
+                    <VerticalStackLayout Spacing="12">
+                        <Label Style="{StaticResource TextSection}" Text="보관함" />
+
+                        <!--  보안코드 (넓은 카드)  -->
+                        <Border
+                            Padding="16"
+                            Background="{Binding HeroTile.Meta.Soft}"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="0">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                <Border
+                                    Grid.Column="0"
+                                    Background="{Binding HeroTile.Meta.SoftStrong}"
+                                    HeightRequest="46"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0"
+                                    WidthRequest="46">
+                                    <Path
+                                        Data="{Binding HeroTile.Meta.Icon}"
+                                        HeightRequest="25"
+                                        Stroke="{Binding HeroTile.Meta.Accent}"
+                                        StrokeLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeThickness="1.7"
+                                        WidthRequest="25"
+                                        Aspect="Uniform"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextHeadline}" Text="{Binding HeroTile.Meta.Title}" />
+                                    <Label Style="{StaticResource TextCaption}" Text="{Binding HeroTile.Meta.Caption}" />
+                                </VerticalStackLayout>
+
+                                <Grid
+                                    Grid.Column="2"
+                                    ColumnDefinitions="Auto,Auto"
+                                    ColumnSpacing="7"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        Text="{Binding HeroTile.CountText}"
+                                        TextColor="{Binding HeroTile.Meta.Accent}"
+                                        VerticalOptions="Center" />
+                                    <Path
+                                        Grid.Column="1"
+                                        Data="{x:Static m:Icons.ChevronRight}"
+                                        HeightRequest="15"
+                                        Stroke="{Binding HeroTile.Meta.Accent}"
+                                        StrokeLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeThickness="2"
+                                        WidthRequest="15"
+                                        Aspect="Uniform"
+                                        VerticalOptions="Center" />
+                                </Grid>
+
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenCategoryCommand}" CommandParameter="{Binding HeroTile}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </Border>
+
+                        <!--  나머지 2x2  -->
+                        <CollectionView
+                            ItemsSource="{Binding OtherTiles}"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Never">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout
+                                    HorizontalItemSpacing="12"
+                                    Orientation="Vertical"
+                                    Span="2"
+                                    VerticalItemSpacing="12" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:HomeTileViewModel">
+                                    <Border
+                                        Padding="14"
+                                        Background="{Binding Meta.Soft}"
+                                        StrokeShape="RoundRectangle 20"
+                                        StrokeThickness="0">
+                                        <VerticalStackLayout Spacing="10">
+                                            <Border
+                                                Background="{Binding Meta.SoftStrong}"
+                                                HeightRequest="40"
+                                                HorizontalOptions="Start"
+                                                StrokeShape="RoundRectangle 12"
+                                                StrokeThickness="0"
+                                                WidthRequest="40">
+                                                <Path
+                                                    Data="{Binding Meta.Icon}"
+                                                    HeightRequest="22"
+                                                    Stroke="{Binding Meta.Accent}"
+                                                    StrokeLineCap="Round"
+                                                    StrokeLineJoin="Round"
+                                                    StrokeThickness="1.7"
+                                                    WidthRequest="22"
+                                                    Aspect="Uniform"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+
+                                            <VerticalStackLayout Spacing="1">
+                                                <Label Style="{StaticResource TextHeadline}" Text="{Binding Meta.Title}" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="12.5"
+                                                    Text="{Binding CountText}"
+                                                    TextColor="{Binding Meta.Accent}" />
+                                            </VerticalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=OpenCategoryCommand, x:DataType=vm:HomeViewModel}" CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                    <!--  ── 최근 항목 ──  -->
+                    <VerticalStackLayout IsVisible="{Binding HasRecent}" Spacing="12">
+                        <Label Style="{StaticResource TextSection}" Text="최근 항목" />
+
+                        <Border Style="{StaticResource CardFlat}">
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Recent}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:VaultRowViewModel">
+                                        <Grid
+                                            Padding="14,13"
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            ColumnSpacing="12">
+                                            <Border
+                                                Grid.Column="0"
+                                                Background="{Binding Meta.Soft}"
+                                                HeightRequest="36"
+                                                StrokeShape="RoundRectangle 11"
+                                                StrokeThickness="0"
+                                                WidthRequest="36">
+                                                <Path
+                                                    Data="{Binding Meta.Icon}"
+                                                    HeightRequest="19"
+                                                    Stroke="{Binding Meta.Accent}"
+                                                    StrokeLineCap="Round"
+                                                    StrokeLineJoin="Round"
+                                                    StrokeThickness="1.7"
+                                                    WidthRequest="19"
+                                                    Aspect="Uniform"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+
+                                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                                <Label Style="{StaticResource TextBodyStrong}" Text="{Binding Title}" />
+                                                <Label Style="{StaticResource TextCaption}" Text="{Binding Subtitle}" />
+                                            </VerticalStackLayout>
+
+                                            <Path
+                                                Grid.Column="2"
+                                                Data="{x:Static m:Icons.ChevronRight}"
+                                                Style="{StaticResource IconChevron}" />
+
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=OpenItemCommand, x:DataType=vm:HomeViewModel}" CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!--  ── 세션 동작 ──  -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Grid.Column="0"
+                            Command="{Binding ExtendCommand}"
+                            Style="{StaticResource ButtonSecondary}"
+                            Text="시간 연장" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding SignOutCommand}"
+                            Style="{StaticResource ButtonGhost}"
+                            Text="로그아웃" />
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <!--  토스트  -->
+        <Border
+            Margin="24,0,24,20"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

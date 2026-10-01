@@ -1,0 +1,52 @@
+<Window x:Class="BH_SecurityCode.Views.IdCard.IdTypeSelectorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:BH_SecurityCode.Helpers"
+        xmlns:vm="clr-namespace:BH_SecurityCode.ViewModels.IdCard"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:IdTypeSelectorViewModel}"
+        Style="{StaticResource DarkDialog}"
+        Title="{Binding Title}"
+        Width="320"
+        SizeToContent="Height"
+        helpers:DialogBehavior.DialogResult="{Binding DialogResult}">
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding CloseCommand}" />
+    </Window.InputBindings>
+    <Window.Resources>
+        <Style x:Key="SelectorButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="20">
+        <!--  종류는 코드 테이블(112) CdIdType 기준: 주민등록증/운전면허증/여권 (자격증은 API 에 없음)  -->
+        <TextBlock Text="추가할 신분증 종류를 선택하세요" Style="{StaticResource SubtitleText}" Margin="0,0,0,14" />
+
+        <Button Style="{StaticResource SelectorButton}" Command="{Binding SelectCommand}" CommandParameter="주민등록증" AutomationProperties.Name="주민등록증">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/Images/id_resident.png" Width="24" Height="24" />
+                <TextBlock Text="주민등록증" Margin="12,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <Button Style="{StaticResource SelectorButton}" Command="{Binding SelectCommand}" CommandParameter="운전면허증" AutomationProperties.Name="운전면허증">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/Images/id_driver.png" Width="24" Height="24" />
+                <TextBlock Text="운전면허증" Margin="12,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+        <Button Style="{StaticResource SelectorButton}" Command="{Binding SelectCommand}" CommandParameter="여권" AutomationProperties.Name="여권">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/Images/id_passport.png" Width="24" Height="24" />
+                <TextBlock Text="여권" Margin="12,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+        </Button>
+
+        <Button Content="취소" Command="{Binding CloseCommand}" Margin="0,8,0,0" IsCancel="True" />
+    </StackPanel>
+</Window>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BH Security Code</title>
+<meta name="description" content="보안카드·통장·카드·신분증·계정 정보를 한곳에서 관리하는 BH Security Code. Windows 데스크톱과 Android 앱을 제공합니다." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 456 456'%3E%3Cdefs%3E%3CclipPath id='b'%3E%3Crect x='262' y='194' width='54' height='97' rx='8'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='456' height='456' rx='96' fill='%234F5BD5'/%3E%3Cpath d='M140 146H178a11 11 0 0 1 8 3l20 20H316a17 17 0 0 1 17 17V293a17 17 0 0 1-17 17H140a17 17 0 0 1-17-17V163a17 17 0 0 1 17-17Z' fill='%23fff'/%3E%3Cg clip-path='url(%23b)'%3E%3Crect x='262' y='194' width='54' height='97' fill='%23F5B301'/%3E%3Cpath d='M240 100L340 200V220L240 120ZM240 140L340 240V260L240 160ZM240 180L340 280V300L240 200ZM240 220L340 320V340L240 240ZM240 260L340 360V380L240 280Z' fill='%231A1D23'/%3E%3C/g%3E%3Crect x='142' y='215' width='30' height='22' rx='5' fill='%23C9CEE8'/%3E%3Crect x='180' y='215' width='30' height='22' rx='5' fill='%234F5BD5'/%3E%3Crect x='218' y='215' width='30' height='22' rx='5' fill='%23C9CEE8'/%3E%3Crect x='142' y='247' width='30' height='22' rx='5' fill='%234F5BD5'/%3E%3Crect x='180' y='247' width='30' height='22' rx='5' fill='%23C9CEE8'/%3E%3Crect x='218' y='247' width='30' height='22' rx='5' fill='%23C9CEE8'/%3E%3C/svg%3E" />
+<style>
+  :root{
+    --surface:#202124; --raised:#35363A; --sunken:#28292C;
+    --border:#4A4D52; --accent:#4F5BD5; --accent-press:#3F4AB8; --accent-text:#A9B0F5;
+    --text:#E8EAED; --muted:#9AA0A6; --gold:#F5B301; --success:#13924B; --danger:#C8262C;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--surface); color:var(--text);
+    font-family:"Segoe UI","Malgun Gothic",system-ui,-apple-system,sans-serif;
+    font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent-text); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px}
+  .logo{display:block; flex:none}
+
+  header{border-bottom:1px solid var(--border); background:rgba(32,33,36,.85);
+    backdrop-filter:blur(8px); position:sticky; top:0; z-index:10}
+  .bar{display:flex; align-items:center; gap:12px; height:60px}
+  .bar .logo{width:26px; height:26px}
+  .bar strong{font-size:15px; letter-spacing:-.2px}
+  .bar .pub{color:var(--muted); font-size:12.5px}
+  .bar nav{margin-left:auto; display:flex; gap:20px; font-size:13.5px}
+  .bar nav a{color:var(--muted)}
+  .bar nav a:hover{color:var(--text); text-decoration:none}
+
+  .hero{padding:72px 0 56px; text-align:center;
+    background:radial-gradient(900px 380px at 50% -120px, rgba(79,91,213,.26), transparent 70%)}
+  .hero .logo{width:76px; height:76px; margin:0 auto 22px}
+  .hero h1{margin:0 0 12px; font-size:40px; line-height:1.25; letter-spacing:-.8px}
+  .hero .sub{margin:0 auto 26px; max-width:620px; color:var(--muted); font-size:16.5px}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:30px}
+  .badge{border:1px solid var(--border); background:var(--sunken); color:var(--muted);
+    border-radius:999px; padding:5px 13px; font-size:12.5px}
+  .badge b{color:var(--text); font-weight:600}
+  .cta{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-items:center}
+  .btn{display:inline-block; border-radius:var(--radius); padding:13px 30px;
+    font-size:15px; font-weight:600; border:1px solid transparent; cursor:pointer}
+  .btn small{display:block; font-size:11.5px; font-weight:400; opacity:.8; margin-top:1px}
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:var(--accent-press); text-decoration:none}
+  .btn-ghost{background:transparent; color:var(--text); border-color:var(--border)}
+  .btn-ghost:hover{background:var(--raised); text-decoration:none}
+  .cta .hint{width:100%; color:var(--muted); font-size:12.5px; margin-top:6px}
+
+  section{padding:52px 0; border-top:1px solid var(--border)}
+  h2{margin:0 0 6px; font-size:22px; letter-spacing:-.4px}
+  .lead{margin:0 0 28px; color:var(--muted); font-size:14px}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px}
+  .card{background:var(--sunken); border:1px solid var(--border); border-radius:var(--radius); padding:22px}
+  .card h3{margin:0 0 8px; font-size:15.5px}
+  .card p{margin:0; color:var(--muted); font-size:14px}
+  .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:8px; vertical-align:1px}
+
+  /* 넓은 내용은 각자 안에서 스크롤시키고, 문서 자체는 가로로 넘치지 않게 합니다. */
+  .table-wrap{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{text-align:left; padding:13px 14px; border-bottom:1px solid var(--border); vertical-align:top}
+  th{width:190px; color:var(--muted); font-weight:500; white-space:nowrap}
+  tr:last-child th,tr:last-child td{border-bottom:none}
+  thead th{color:var(--text); font-weight:600; border-bottom:1px solid var(--border)}
+  .req th{width:150px}
+  kbd{font-family:Consolas,"D2Coding",monospace; font-size:12px; background:var(--raised);
+    border:1px solid var(--border); border-bottom-width:2px; border-radius:5px; padding:1px 6px; color:var(--text)}
+
+  .note{background:var(--sunken); border:1px solid var(--border);
+    border-left:3px solid var(--accent); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px}
+  .note h3{margin:0 0 8px; font-size:15px}
+  .note p{margin:0 0 12px; color:var(--muted); font-size:14px}
+  .note p:last-child{margin-bottom:0}
+  .note ol{margin:0; padding-left:20px; color:var(--muted); font-size:14px}
+  .note li{margin-bottom:4px}
+
+  footer{border-top:1px solid var(--border); padding:30px 0 44px; color:var(--muted); font-size:13px}
+  .foot{display:flex; flex-wrap:wrap; gap:12px; align-items:center}
+  .foot .right{margin-left:auto}
+
+  @media (max-width:640px){
+    .hero{padding:52px 0 40px}
+    .hero h1{font-size:30px}
+    .bar nav{display:none}
+    .btn{width:100%}
+    .req th{width:auto; display:block; padding-bottom:0; border:none}
+    .req td{display:block; padding-top:4px}
+  }
+</style>
+</head>
+<body>
+
+<!-- 앱 아이콘(모바일 appicon.svg + appiconfg.svg)을 한 번 정의하고 <use> 로 재사용합니다. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="band"><rect x="262" y="194" width="54" height="97" rx="8" ry="8" /></clipPath>
+    <symbol id="appicon" viewBox="0 0 456 456">
+      <rect width="456" height="456" rx="96" fill="#4F5BD5" />
+      <path d="M 140 146 H 178 a 11 11 0 0 1 8 3 l 20 20 H 316 a 17 17 0 0 1 17 17 V 293 a 17 17 0 0 1 -17 17 H 140 a 17 17 0 0 1 -17 -17 V 163 a 17 17 0 0 1 17 -17 Z" fill="#FFFFFF" />
+      <g clip-path="url(#band)">
+        <rect x="262" y="194" width="54" height="97" fill="#F5B301" />
+        <path d="M 240 100 L 340 200 L 340 220 L 240 120 Z M 240 140 L 340 240 L 340 260 L 240 160 Z M 240 180 L 340 280 L 340 300 L 240 200 Z M 240 220 L 340 320 L 340 340 L 240 240 Z M 240 260 L 340 360 L 340 380 L 240 280 Z" fill="#1A1D23" />
+      </g>
+      <rect x="142" y="215" width="30" height="22" rx="5" fill="#C9CEE8" />
+      <rect x="180" y="215" width="30" height="22" rx="5" fill="#4F5BD5" />
+      <rect x="218" y="215" width="30" height="22" rx="5" fill="#C9CEE8" />
+      <rect x="142" y="247" width="30" height="22" rx="5" fill="#4F5BD5" />
+      <rect x="180" y="247" width="30" height="22" rx="5" fill="#C9CEE8" />
+      <rect x="218" y="247" width="30" height="22" rx="5" fill="#C9CEE8" />
+    </symbol>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap bar">
+    <svg class="logo"><use href="#appicon" /></svg>
+    <strong>BH Security Code</strong>
+    <span class="pub">BH Soft</span>
+    <nav>
+      <a href="#features">기능</a>
+      <a href="#requirements">설치 사양</a>
+      <a href="#setup">설치 방법</a>
+      <a href="#shortcuts">단축키</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <svg class="logo" role="img" aria-label="BH Security Code"><use href="#appicon" /></svg>
+    <h1>흩어진 보안 정보를 한곳에</h1>
+    <p class="sub">보안카드, 통장, 카드, 신분증, 사이트 계정을 하나의 금고에서 관리합니다. 모든 데이터는 서버 API를 거쳐 오가며, PC와 휴대폰에서 같은 내용을 봅니다.</p>
+    <div class="badges">
+      <span class="badge">PC <b id="version">2.0.0</b></span>
+      <span class="badge">Android <b id="apk-version">1.0.1</b></span>
+      <span class="badge">Windows <b>10 / 11</b> (64비트)</span>
+      <span class="badge">Android <b>14</b> 이상</span>
+      <span class="badge">게시자 <b>BH Soft</b></span>
+    </div>
+    <div class="cta">
+      <!--  이 페이지와 같은 경로의 파일을 받습니다.  -->
+      <a class="btn btn-primary" href="install.exe.zip" download>Windows용 설치하기<small data-size>설치 관리자</small></a>
+      <a class="btn btn-ghost" href="BH_SecurityCode.apk" download>Android 앱 받기<small data-apk-size>APK</small></a>
+      <span class="hint">PC 설치 관리자는 필요한 런타임을 함께 설치합니다. Android 앱은 APK를 직접 설치합니다(아래 설치 방법 참고).</span>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>무엇을 관리하나</h2>
+    <p class="lead">종류마다 따로 적어 두던 정보를 한 프로그램에서 찾고, 고치고, 복사합니다.</p>
+    <div class="cards">
+      <div class="card">
+        <h3><span class="dot" style="background:#4F5BD5"></span>보안카드</h3>
+        <p>은행별 보안카드 번호표를 그대로 옮겨 두고, 간편보기(F1)로 필요한 칸만 바로 확인합니다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:#F5B301"></span>통장 · 카드 · 신분증</h3>
+        <p>계좌, 카드, 주민등록증·운전면허증·여권 같은 신분증 정보와 사진을 항목별로 정리합니다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:#13924B"></span>사이트 계정</h3>
+        <p>사이트 주소와 계정을 함께 저장하고, 목록에서 사이트를 바로 열거나 아이디·비밀번호를 복사합니다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:#C8262C"></span>잠금과 세션 보호</h3>
+        <p>자리를 비우면 화면이 자동으로 잠기고, 다른 곳에서 같은 계정으로 로그인하면 기존 세션을 확인한 뒤 넘겨받습니다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:#8AB4F8"></span>DB 직접 접근 없음</h3>
+        <p>앱은 데이터베이스에 직접 붙지 않습니다. 모든 조회와 저장은 인증된 서버 API를 통해서만 이뤄집니다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:#C9CEE8"></span>PC와 휴대폰에서 같이</h3>
+        <p>같은 서버에 연결하면 Windows 프로그램과 Android 앱이 같은 금고를 봅니다. 밖에서는 휴대폰으로 확인합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="requirements">
+  <div class="wrap">
+    <h2>최소 설치 사양</h2>
+    <p class="lead">PC 설치 관리자는 부족한 런타임을 자동으로 채워 넣습니다.</p>
+    <div class="table-wrap">
+    <table class="req">
+      <thead><tr><th>Windows</th><td></td></tr></thead>
+      <tr><th>운영체제</th><td>Windows 10 또는 Windows 11 — 64비트</td></tr>
+      <tr><th>런타임</th><td>.NET 데스크톱 런타임 8.0 (x64) — 없으면 설치 관리자가 함께 설치합니다</td></tr>
+      <tr><th>다운로드 크기</th><td><span data-size>—</span> (런타임 별도)</td></tr>
+    </table>
+    </div>
+    <div class="table-wrap" style="margin-top:28px">
+    <table class="req">
+      <thead><tr><th>Android</th><td></td></tr></thead>
+      <tr><th>운영체제</th><td>Android 14 (API 34) 이상</td></tr>
+      <tr><th>기기</th><td>ARM 64비트 기기 (갤럭시 A35 기준으로 검증)</td></tr>
+      <tr><th>화면</th><td>세로 고정</td></tr>
+      <tr><th>다운로드 크기</th><td><span data-apk-size>—</span></td></tr>
+    </table>
+    </div>
+    <div class="table-wrap" style="margin-top:28px">
+    <table class="req">
+      <thead><tr><th>공통</th><td></td></tr></thead>
+      <tr><th>네트워크</th><td>BH 보안코드 서버(API)에 HTTPS로 접속할 수 있어야 합니다</td></tr>
+      <tr><th>계정</th><td>관리자에게 발급받은 사용자 계정</td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section id="setup">
+  <div class="wrap">
+    <h2>설치 방법</h2>
+    <p class="lead">처음 한 번만 확인하면 됩니다.</p>
+
+    <div class="note">
+      <h3>1. Windows에 설치</h3>
+      <ol>
+        <li><b>Windows용 설치하기</b>를 눌러 <code>install.exe.zip</code>을 받고 압축을 풉니다.</li>
+        <li><code>install.exe</code>를 실행합니다. "Windows의 PC 보호" 창이 뜨면 <b>추가 정보 → 실행</b>을 누릅니다.</li>
+        <li>설치가 끝나면 바탕 화면이나 시작 메뉴의 <b>BH Security Code</b>를 실행합니다.</li>
+      </ol>
+    </div>
+
+    <div class="note">
+      <h3>2. Android에 설치</h3>
+      <ol>
+        <li>휴대폰 브라우저에서 이 페이지를 열고 <b>Android 앱 받기</b>를 누릅니다.</li>
+        <li>내려받은 <code>BH_SecurityCode.apk</code>를 엽니다. "출처를 알 수 없는 앱" 안내가 뜨면 해당 브라우저(또는 내 파일)에 <b>설치 허용</b>을 켭니다.</li>
+        <li>이미 설치돼 있다면 같은 방법으로 덮어 설치합니다. 저장된 설정은 그대로 유지됩니다.</li>
+      </ol>
+    </div>
+
+    <div class="note">
+      <h3>3. 서버 주소와 로그인</h3>
+      <p>처음 실행하면 로그인 화면이 열립니다. PC는 오른쪽 아래 <b>⚙</b>, Android는 로그인 화면의 <b>서버 설정</b>에서 관리자에게 받은 서버 주소를 넣은 뒤 계정으로 로그인하세요. 다른 기기에서 이미 로그인 중이면 확인을 거쳐 이 기기로 세션을 옮깁니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="shortcuts">
+  <div class="wrap">
+    <h2>PC 단축키</h2>
+    <p class="lead">마우스 없이 대부분의 작업을 할 수 있습니다.</p>
+    <div class="table-wrap">
+    <table>
+      <tr><th><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>I</kbd> <kbd>X</kbd></th><td>보안코드 / 통장 / 카드 / 신분증 / 계정 화면</td></tr>
+      <tr><th><kbd>Ins</kbd> <kbd>F8</kbd> <kbd>Del</kbd> <kbd>F7</kbd></th><td>추가 / 수정 / 삭제 / 복사</td></tr>
+      <tr><th><kbd>F5</kbd> <kbd>F6</kbd> <kbd>F11</kbd> <kbd>F12</kbd></th><td>갱신 / 검색 / 엑셀 / 인쇄</td></tr>
+      <tr><th><kbd>F1</kbd> <kbd>F2</kbd></th><td>보안카드 간편보기 / 상세보기</td></tr>
+      <tr><th><kbd>Esc</kbd> 두 번</th><td>현재 화면 닫기</td></tr>
+      <tr><th><kbd>Alt</kbd>+<kbd>R</kbd> <kbd>L</kbd> <kbd>O</kbd></th><td>시간 연장 / 화면 잠금 / 로그아웃</td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>BH Security Code · 게시자 <b>BH Soft</b></div>
+    <div class="right">문의 <a href="mailto:contact@bhsoft.co.kr">contact@bhsoft.co.kr</a></div>
+  </div>
+</footer>
+
+<script>
+// 버전과 다운로드 용량은 같은 경로의 index.json 에서 읽습니다.
+//   { "ver": "2.0.0", "vol": "약 3MB", "apkVer": "1.0.1", "apkVol": "약 30MB" }
+// 못 읽으면(로컬에서 직접 열어 본 경우 등) 적혀 있는 값을 그대로 둡니다.
+fetch('index.json', { cache: 'no-store' })
+  .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('not found')); })
+  .then(function (info) {
+    if (info.ver) { document.getElementById('version').textContent = info.ver; }
+    if (info.apkVer) { document.getElementById('apk-version').textContent = info.apkVer; }
+    if (info.vol) {
+      document.querySelectorAll('[data-size]').forEach(function (el) { el.textContent = info.vol; });
+    }
+    if (info.apkVol) {
+      document.querySelectorAll('[data-apk-size]').forEach(function (el) { el.textContent = info.apkVol; });
+    }
+  })
+  .catch(function () {});
+</script>
+
+</body>
+</html>

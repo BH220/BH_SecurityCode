@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- 배경 레이어. 안드로이드 적응형 아이콘의 뒷면이 되므로 단색으로 꽉 채운다. -->
+<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="456" height="456" fill="#4F5BD5" />
+</svg>

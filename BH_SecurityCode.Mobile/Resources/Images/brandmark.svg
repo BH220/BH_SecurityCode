@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    앱 마크 (로그인 화면 등 인앱에서 쓰는 브랜드 이미지).
+    런처 아이콘(Resources/AppIcon/appiconfg.svg)과 같은 그림이고, 잘림이 없으므로 캔버스를 꽉 채운다.
+    흰색 폴더 기준이라 어두운 배경 위에 올려야 한다.
+-->
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <clipPath id="markBand">
+            <rect x="126" y="74" width="34" height="62" rx="6" ry="6" />
+        </clipPath>
+    </defs>
+
+    <path
+        d="M 44 40 H 74 a 8 8 0 0 1 6 2 l 14 14 H 168 a 12 12 0 0 1 12 12 V 140 a 12 12 0 0 1 -12 12 H 44 a 12 12 0 0 1 -12 -12 V 52 a 12 12 0 0 1 12 -12 Z"
+        fill="#FFFFFF" />
+
+    <g clip-path="url(#markBand)">
+        <rect x="126" y="74" width="34" height="62" fill="#F5B301" />
+        <path d="M 110 20 L 176 86 L 176 99 L 110 33 Z" fill="#1A1D23" />
+        <path d="M 110 46 L 176 112 L 176 125 L 110 59 Z" fill="#1A1D23" />
+        <path d="M 110 72 L 176 138 L 176 151 L 110 85 Z" fill="#1A1D23" />
+        <path d="M 110 98 L 176 164 L 176 177 L 110 111 Z" fill="#1A1D23" />
+    </g>
+
+    <rect x="50" y="87" width="20" height="15" rx="3.5" ry="3.5" fill="#C9CEE8" />
+    <rect x="75" y="87" width="20" height="15" rx="3.5" ry="3.5" fill="#4F5BD5" />
+    <rect x="100" y="87" width="20" height="15" rx="3.5" ry="3.5" fill="#C9CEE8" />
+    <rect x="50" y="108" width="20" height="15" rx="3.5" ry="3.5" fill="#4F5BD5" />
+    <rect x="75" y="108" width="20" height="15" rx="3.5" ry="3.5" fill="#C9CEE8" />
+    <rect x="100" y="108" width="20" height="15" rx="3.5" ry="3.5" fill="#C9CEE8" />
+</svg>

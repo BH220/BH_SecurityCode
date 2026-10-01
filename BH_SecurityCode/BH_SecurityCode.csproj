@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms> <!-- 트레이 아이콘(NotifyIcon) 용. 암시적 using 은 아래 ItemGroup 에서 제거 -->
+    <RootNamespace>BH_SecurityCode</RootNamespace>
+    <AssemblyName>BH_SecurityCode</AssemblyName>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Version>2.0.0</Version>
+    <Product>BH Security Code</Product>
+    <Company>BH Soft</Company>
+    <NoWarn>$(NoWarn);CS8618;CS8601;CS8602;CS8603;CS8604;CS8625;CS8600</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WinForms 전역 using 이 WPF 타입(Application, Control, TextBox ...)과 충돌하므로 뺀다. 트레이 코드는 WinForms 별칭으로 명시 참조 -->
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BH_SecurityCode.Api\BH_SecurityCode.Api.csproj" />
+    <ProjectReference Include="..\BH_SecurityCode.Core\BH_SecurityCode.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\Images\*.png" />
+    <Resource Include="Assets\Images\*.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\BankBook\" />
+  </ItemGroup>
+
+</Project>

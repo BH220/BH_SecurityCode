@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.VaultEditPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:v="clr-namespace:BH_SecurityCode.Mobile.Views"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:VaultEditViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+
+        <!--  ── 입력 칸 템플릿 ──  -->
+        <DataTemplate x:Key="FieldText" x:DataType="vm:EditFieldViewModel">
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{StaticResource TextFieldKey}" Text="{Binding LabelText}" />
+                <Border Style="{StaticResource InputShell}">
+                    <Entry
+                        IsSpellCheckEnabled="False"
+                        IsTextPredictionEnabled="False"
+                        Keyboard="{Binding Keyboard}"
+                        MaxLength="{Binding MaxLength}"
+                        Placeholder="{Binding Placeholder}"
+                        Text="{Binding Text}" />
+                </Border>
+                <Label
+                    IsVisible="{Binding HasError}"
+                    LineBreakMode="WordWrap"
+                    Style="{StaticResource TextDanger}"
+                    Text="{Binding Error}" />
+            </VerticalStackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FieldMultiline" x:DataType="vm:EditFieldViewModel">
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{StaticResource TextFieldKey}" Text="{Binding LabelText}" />
+                <Border Padding="12,6" Style="{StaticResource InputShell}">
+                    <Editor
+                        AutoSize="Disabled"
+                        HeightRequest="88"
+                        MaxLength="{Binding MaxLength}"
+                        Placeholder="{Binding Placeholder}"
+                        Text="{Binding Text}" />
+                </Border>
+                <Label
+                    IsVisible="{Binding HasError}"
+                    LineBreakMode="WordWrap"
+                    Style="{StaticResource TextDanger}"
+                    Text="{Binding Error}" />
+            </VerticalStackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FieldChoice" x:DataType="vm:EditFieldViewModel">
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{StaticResource TextFieldKey}" Text="{Binding LabelText}" />
+                <Border Style="{StaticResource InputShell}">
+                    <Picker
+                        ItemDisplayBinding="{Binding Text}"
+                        ItemsSource="{Binding Options}"
+                        SelectedItem="{Binding Choice}"
+                        Title="선택" />
+                </Border>
+                <Label
+                    IsVisible="{Binding HasError}"
+                    LineBreakMode="WordWrap"
+                    Style="{StaticResource TextDanger}"
+                    Text="{Binding Error}" />
+            </VerticalStackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FieldDate" x:DataType="vm:EditFieldViewModel">
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{StaticResource TextFieldKey}" Text="{Binding LabelText}" />
+                <Border Padding="14,3" Style="{StaticResource InputShell}">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <DatePicker
+                            Grid.Column="0"
+                            Date="{Binding Date}"
+                            Format="yyyy.MM.dd"
+                            IsVisible="{Binding HasDate}" />
+                        <Label
+                            Grid.Column="0"
+                            IsVisible="{Binding HasDate, Converter={StaticResource Not}}"
+                            Style="{StaticResource TextCallout}"
+                            Text="지정 안 함"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding PickDateCommand}"
+                            FontSize="13"
+                            HeightRequest="34"
+                            IsVisible="{Binding HasDate, Converter={StaticResource Not}}"
+                            Padding="12,0"
+                            Style="{StaticResource ButtonSecondary}"
+                            Text="지정"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding ClearDateCommand}"
+                            FontSize="13"
+                            HeightRequest="34"
+                            IsVisible="{Binding HasDate}"
+                            Padding="12,0"
+                            Style="{StaticResource ButtonGhost}"
+                            Text="지우기"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </DataTemplate>
+
+        <v:EditFieldTemplateSelector
+            x:Key="FieldSelector"
+            ChoiceTemplate="{StaticResource FieldChoice}"
+            DateTemplate="{StaticResource FieldDate}"
+            MultilineTemplate="{StaticResource FieldMultiline}"
+            TextTemplate="{StaticResource FieldText}" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!--  ── 헤더 ──  -->
+        <Grid
+            Grid.Row="0"
+            Padding="14,10,20,14"
+            Background="{Binding Meta.Accent}"
+            ColumnDefinitions="Auto,*">
+            <Border
+                Grid.Column="0"
+                Background="Transparent"
+                HeightRequest="40"
+                StrokeThickness="0"
+                WidthRequest="40">
+                <Path
+                    Data="{x:Static m:Icons.ChevronLeft}"
+                    HeightRequest="22"
+                    Stroke="White"
+                    StrokeLineCap="Round"
+                    StrokeLineJoin="Round"
+                    StrokeThickness="2"
+                    WidthRequest="22"
+                    Aspect="Uniform"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CancelCommand}" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Label
+                Grid.Column="1"
+                FontAttributes="Bold"
+                FontSize="19"
+                Text="{Binding PageTitle}"
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <!--  ── 본문 ──  -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,18,20,24" Spacing="18">
+
+                <!--  오류  -->
+                <Border IsVisible="{Binding HasError}" Style="{StaticResource Card}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.Warning}"
+                            HeightRequest="20"
+                            Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                            StrokeLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="1.7"
+                            WidthRequest="20"
+                            Aspect="Uniform"
+                            VerticalOptions="Start" />
+                        <Label
+                            Grid.Column="1"
+                            LineBreakMode="WordWrap"
+                            Style="{StaticResource TextBody}"
+                            Text="{Binding ErrorText}" />
+                    </Grid>
+                </Border>
+
+                <!--  입력 칸  -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout
+                        BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}"
+                        BindableLayout.ItemsSource="{Binding Fields}"
+                        Spacing="14" />
+                </Border>
+
+                <!--  보안카드 코드  -->
+                <VerticalStackLayout IsVisible="{Binding HasCodes}" Spacing="9">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            Grid.Column="0"
+                            Style="{StaticResource TextSection}"
+                            Text="코드"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            Style="{StaticResource TextMicro}"
+                            Text="빈 칸은 저장하지 않습니다"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding Codes}" SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout
+                                HorizontalItemSpacing="8"
+                                Orientation="Vertical"
+                                Span="3"
+                                VerticalItemSpacing="8" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CodeEntryViewModel">
+                                <Border Padding="10,4" Style="{StaticResource InputShell}">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                                        <Label
+                                            Grid.Column="0"
+                                            Style="{StaticResource TextMicro}"
+                                            Text="{Binding NoText}"
+                                            VerticalOptions="Center" />
+                                        <Entry
+                                            Grid.Column="1"
+                                            FontFamily="monospace"
+                                            HeightRequest="42"
+                                            Keyboard="Numeric"
+                                            MaxLength="6"
+                                            Text="{Binding Code}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!--  계정 하위 아이디/비밀번호  -->
+                <VerticalStackLayout IsVisible="{Binding HasAccounts}" Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="아이디 · 비밀번호" />
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Accounts}" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AccountEntryViewModel">
+                                <Border Style="{StaticResource Card}" Padding="14">
+                                    <VerticalStackLayout Spacing="10">
+                                        <Border Style="{StaticResource InputShell}" Background="{AppThemeBinding Light={StaticResource LtSurfaceSunken}, Dark={StaticResource DkSurfaceSunken}}">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                                <Path
+                                                    Grid.Column="0"
+                                                    Data="{x:Static m:Icons.User}"
+                                                    HeightRequest="17"
+                                                    Style="{StaticResource IconMuted}"
+                                                    WidthRequest="17" />
+                                                <Entry
+                                                    Grid.Column="1"
+                                                    IsSpellCheckEnabled="False"
+                                                    IsTextPredictionEnabled="False"
+                                                    Placeholder="아이디"
+                                                    Text="{Binding Id}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <Border Style="{StaticResource InputShell}" Background="{AppThemeBinding Light={StaticResource LtSurfaceSunken}, Dark={StaticResource DkSurfaceSunken}}">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                                <Path
+                                                    Grid.Column="0"
+                                                    Data="{x:Static m:Icons.Lock}"
+                                                    HeightRequest="17"
+                                                    Style="{StaticResource IconMuted}"
+                                                    WidthRequest="17" />
+                                                <Entry
+                                                    Grid.Column="1"
+                                                    IsPassword="{Binding IsPasswordHidden}"
+                                                    IsSpellCheckEnabled="False"
+                                                    IsTextPredictionEnabled="False"
+                                                    Placeholder="비밀번호"
+                                                    Text="{Binding Password}" />
+                                                <Border
+                                                    Grid.Column="2"
+                                                    Background="Transparent"
+                                                    HeightRequest="32"
+                                                    StrokeThickness="0"
+                                                    WidthRequest="32">
+                                                    <Grid>
+                                                        <Path
+                                                            Data="{x:Static m:Icons.Eye}"
+                                                            HeightRequest="17"
+                                                            IsVisible="{Binding IsPasswordHidden}"
+                                                            Style="{StaticResource IconMuted}"
+                                                            WidthRequest="17" />
+                                                        <Path
+                                                            Data="{x:Static m:Icons.EyeOff}"
+                                                            HeightRequest="17"
+                                                            IsVisible="{Binding IsPasswordHidden, Converter={StaticResource Not}}"
+                                                            Style="{StaticResource IconAccent}"
+                                                            WidthRequest="17" />
+                                                    </Grid>
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding ToggleRevealCommand}" />
+                                                    </Border.GestureRecognizers>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+
+                                        <Button
+                                            Command="{Binding RemoveCommand}"
+                                            HeightRequest="38"
+                                            HorizontalOptions="End"
+                                            FontSize="13"
+                                            Style="{StaticResource ButtonDanger}"
+                                            Text="이 줄 삭제" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Button
+                        Command="{Binding AddAccountCommand}"
+                        Style="{StaticResource ButtonSecondary}"
+                        Text="아이디 추가" />
+                </VerticalStackLayout>
+
+                <!--  첨부  -->
+                <VerticalStackLayout IsVisible="{Binding SupportsAttachments}" Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="첨부" />
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Attachments}" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:EditAttachmentViewModel">
+                                <Border Style="{StaticResource CardFlat}">
+                                    <VerticalStackLayout>
+                                        <Grid
+                                            Padding="15,12"
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            ColumnSpacing="12">
+                                            <Path
+                                                Grid.Column="0"
+                                                Data="{x:Static m:Icons.Image}"
+                                                HeightRequest="20"
+                                                Style="{StaticResource IconMuted}"
+                                                WidthRequest="20" />
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                <Label Style="{StaticResource TextBody}" Text="{Binding FileName}" />
+                                                <Label Style="{StaticResource TextMicro}" Text="{Binding StateText}" />
+                                            </VerticalStackLayout>
+                                            <Border
+                                                Grid.Column="2"
+                                                Background="Transparent"
+                                                HeightRequest="34"
+                                                StrokeThickness="0"
+                                                WidthRequest="34">
+                                                <Path
+                                                    Data="{x:Static m:Icons.Close}"
+                                                    HeightRequest="17"
+                                                    Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                                                    StrokeLineCap="Round"
+                                                    StrokeThickness="1.9"
+                                                    WidthRequest="17"
+                                                    Aspect="Uniform" />
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding RemoveCommand}" />
+                                                </Border.GestureRecognizers>
+                                            </Border>
+                                        </Grid>
+
+                                        <Border
+                                            Margin="15,0,15,14"
+                                            IsVisible="{Binding HasPreview}"
+                                            StrokeShape="RoundRectangle 12"
+                                            StrokeThickness="1">
+                                            <Image
+                                                Aspect="AspectFit"
+                                                MaximumHeightRequest="260"
+                                                Source="{Binding Preview}" />
+                                        </Border>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Grid.Column="0"
+                            Command="{Binding PickPhotoCommand}"
+                            Style="{StaticResource ButtonSecondary}"
+                            Text="사진 선택" />
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding CapturePhotoCommand}"
+                            Style="{StaticResource ButtonGhost}"
+                            Text="촬영" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!--  삭제  -->
+                <Button
+                    Command="{Binding DeleteCommand}"
+                    IsVisible="{Binding CanDelete}"
+                    Margin="0,6,0,0"
+                    Style="{StaticResource ButtonDanger}"
+                    Text="삭제" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  ── 하단 저장/취소 ──  -->
+        <Border
+            Grid.Row="2"
+            Padding="20,12"
+            StrokeThickness="0"
+            Background="{AppThemeBinding Light={StaticResource LtSurface}, Dark={StaticResource DkSurface}}">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Button
+                    Grid.Column="0"
+                    Command="{Binding CancelCommand}"
+                    IsEnabled="{Binding IsSaving, Converter={StaticResource Not}}"
+                    Style="{StaticResource ButtonGhost}"
+                    Text="취소"
+                    WidthRequest="96" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding IsSaving, Converter={StaticResource Not}}"
+                    Text="저장" />
+            </Grid>
+        </Border>
+
+        <ActivityIndicator
+            Grid.Row="1"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+
+        <!--  토스트  -->
+        <Border
+            Grid.Row="1"
+            Margin="24,0,24,22"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

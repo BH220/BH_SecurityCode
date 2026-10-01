@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.CodeTablePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:CodeTableViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!--  ── 헤더 ──  -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="14,10,20,18"
+            Background="#4F5BD5"
+            Spacing="16">
+
+            <Grid ColumnDefinitions="Auto,*">
+                <Border
+                    Grid.Column="0"
+                    Background="Transparent"
+                    HeightRequest="40"
+                    StrokeThickness="0"
+                    WidthRequest="40">
+                    <Path
+                        Data="{x:Static m:Icons.ChevronLeft}"
+                        HeightRequest="22"
+                        Stroke="White"
+                        StrokeLineCap="Round"
+                        StrokeLineJoin="Round"
+                        StrokeThickness="2"
+                        WidthRequest="22"
+                        Aspect="Uniform"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{Binding CardName}"
+                        TextColor="White" />
+                    <Label
+                        Opacity="0.85"
+                        Style="{StaticResource TextMicro}"
+                        Text="{Binding AlignText}"
+                        TextColor="White" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!--  일련번호  -->
+            <Border
+                Padding="14,11"
+                Background="#26FFFFFF"
+                StrokeShape="RoundRectangle 14"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                    <Label
+                        Grid.Column="0"
+                        Opacity="0.8"
+                        Style="{StaticResource TextMicro}"
+                        Text="일련번호"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        FontFamily="monospace"
+                        FontSize="16"
+                        Text="{Binding SerialDisplay}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+
+                    <Border
+                        Grid.Column="2"
+                        Background="Transparent"
+                        HeightRequest="30"
+                        StrokeThickness="0"
+                        WidthRequest="30">
+                        <Grid>
+                            <Path
+                                Data="{x:Static m:Icons.Eye}"
+                                HeightRequest="18"
+                                IsVisible="{Binding IsSerialRevealed, Converter={StaticResource Not}}"
+                                Stroke="White"
+                                StrokeLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1.6"
+                                WidthRequest="18"
+                                Aspect="Uniform" />
+                            <Path
+                                Data="{x:Static m:Icons.EyeOff}"
+                                HeightRequest="18"
+                                IsVisible="{Binding IsSerialRevealed}"
+                                Stroke="White"
+                                StrokeLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1.6"
+                                WidthRequest="18"
+                                Aspect="Uniform" />
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleSerialCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border
+                        Grid.Column="3"
+                        Background="Transparent"
+                        HeightRequest="30"
+                        StrokeThickness="0"
+                        WidthRequest="30">
+                        <Path
+                            Data="{x:Static m:Icons.Copy}"
+                            HeightRequest="17"
+                            Stroke="White"
+                            StrokeLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="1.6"
+                            WidthRequest="17"
+                            Aspect="Uniform" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopySerialCommand}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <!--  ── 본문 ──  -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,16,20,28" Spacing="16">
+
+                <!--  서버 오류  -->
+                <Border IsVisible="{Binding HasError}" Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                            <Path
+                                Grid.Column="0"
+                                Data="{x:Static m:Icons.Warning}"
+                                HeightRequest="20"
+                                Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                                StrokeLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1.7"
+                                WidthRequest="20"
+                                Aspect="Uniform"
+                                VerticalOptions="Start" />
+                            <Label
+                                Grid.Column="1"
+                                LineBreakMode="WordWrap"
+                                Style="{StaticResource TextBody}"
+                                Text="{Binding ErrorText}" />
+                        </Grid>
+                        <Button
+                            Command="{Binding RetryCommand}"
+                            Style="{StaticResource ButtonSecondary}"
+                            Text="다시 시도" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  표시 방식  -->
+                <VerticalStackLayout IsVisible="{Binding HasError, Converter={StaticResource Not}}" Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="표시 방식" />
+                    <CollectionView ItemsSource="{Binding Modes}" SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout HorizontalItemSpacing="8" Orientation="Vertical" Span="3" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ChipViewModel">
+                                <Border
+                                    Padding="0,10"
+                                    StrokeShape="RoundRectangle 11"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light={StaticResource LtBorder}, Dark={StaticResource DkBorder}}"
+                                    Background="{AppThemeBinding Light={StaticResource LtSurface}, Dark={StaticResource DkSurface}}">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsSelected}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LtAccentSoft}, Dark={StaticResource DkAccentSoft}}" />
+                                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LtAccent}, Dark={StaticResource DkAccent}}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Label
+                                        FontSize="13"
+                                        HorizontalOptions="Center"
+                                        Style="{StaticResource TextCallout}"
+                                        Text="{Binding Text}">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding IsSelected}"
+                                                TargetType="Label"
+                                                Value="True">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LtAccent}, Dark={StaticResource DkAccent}}" />
+                                                <Setter Property="FontAttributes" Value="Bold" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CodeTableViewModel}}, Path=SelectModeCommand, x:DataType=vm:CodeTableViewModel}" CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!--  전체 열기 / 가리기  -->
+                <Border Style="{StaticResource Card}" Padding="15,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.Eye}"
+                            Style="{StaticResource IconMuted}" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Style="{StaticResource TextBodyStrong}" Text="전체 열기" />
+                            <Label Style="{StaticResource TextMicro}" Text="끄면 모든 칸을 다시 가립니다" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="2" IsToggled="{Binding IsAllRevealed}" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <!--  코드 격자  -->
+                <VerticalStackLayout Spacing="9">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            Grid.Column="0"
+                            Style="{StaticResource TextSection}"
+                            Text="코드"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            Style="{StaticResource TextMicro}"
+                            Text="칸을 눌러 확인"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding Cells}" SelectionMode="None">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout
+                                HorizontalItemSpacing="8"
+                                Orientation="Vertical"
+                                Span="4"
+                                VerticalItemSpacing="8" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CodeCellViewModel">
+                                <Border Padding="0,10" StrokeShape="RoundRectangle 12">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label
+                                            FontSize="10"
+                                            HorizontalOptions="Center"
+                                            Style="{StaticResource TextMicro}"
+                                            Text="{Binding NoText}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="monospace"
+                                            FontSize="16"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding Display}" />
+                                    </VerticalStackLayout>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ToggleCommand}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Button
+                        Command="{Binding HideAllCommand}"
+                        Style="{StaticResource ButtonGhost}"
+                        Text="모두 가리기" />
+                </VerticalStackLayout>
+
+                <Border Padding="14,12" Style="{StaticResource CardSunken}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="11">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.Lock}"
+                            HeightRequest="18"
+                            Style="{StaticResource IconMuted}"
+                            WidthRequest="18"
+                            VerticalOptions="Start" />
+                        <Label
+                            Grid.Column="1"
+                            LineBreakMode="WordWrap"
+                            Style="{StaticResource TextCaption}"
+                            Text="코드는 기본으로 가려져 있습니다. 화면을 벗어나면 다시 가려집니다." />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator
+            Grid.Row="1"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+
+        <!--  토스트  -->
+        <Border
+            Grid.Row="1"
+            Margin="24,0,24,22"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  배포용 설정. 평문 HTTP 를 전면 차단한다.
+
+  보안카드·통장·신분증을 다루는 앱이라 공용 와이파이 등에서 중간자 공격에 노출되면 안 된다.
+  예외를 두지 않으므로 API 서버 주소는 반드시 https 여야 한다. (주소 검증도 http 를 거부한다)
+
+  개발 중 로컬 서버(http://127.0.0.1:8169 등)에 붙어야 할 때는
+  Debug 빌드에서 Platforms/Android/ResourcesDebug/xml/network_security_config.xml 이 대신 쓰인다.
+  (교체 규칙은 BH_SecurityCode.Mobile.csproj 참고)
+-->
+<network-security-config>
+	<base-config cleartextTrafficPermitted="false">
+		<trust-anchors>
+			<certificates src="system" />
+		</trust-anchors>
+	</base-config>
+</network-security-config>

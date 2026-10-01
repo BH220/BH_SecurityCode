@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    전경 레이어 — 데스크톱 app.ico(해저드 스트라이프가 붙은 보안 폴더)를 평면으로 다시 그린 것.
+
+    안드로이드 적응형 아이콘은 108dp 중 72dp(약 66%)만 보여주고 나머지는 잘라낸다.
+    여유를 두려면 마크가 캔버스의 절반 정도여야 한다 — 여기서는 456 중 210(46%)을 쓴다.
+    마크 경계: x 123~333, y 146~310 (양쪽 모두 중심 228).
+-->
+<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <clipPath id="band">
+            <rect x="262" y="194" width="54" height="97" rx="8" ry="8" />
+        </clipPath>
+    </defs>
+
+    <!-- 폴더 -->
+    <path
+        d="M 140 146 H 178 a 11 11 0 0 1 8 3 l 20 20 H 316 a 17 17 0 0 1 17 17 V 293 a 17 17 0 0 1 -17 17 H 140 a 17 17 0 0 1 -17 -17 V 163 a 17 17 0 0 1 17 -17 Z"
+        fill="#FFFFFF" />
+
+    <!-- 해저드 밴드 -->
+    <g clip-path="url(#band)">
+        <rect x="262" y="194" width="54" height="97" fill="#F5B301" />
+        <path d="M 240 100 L 340 200 L 340 220 L 240 120 Z" fill="#1A1D23" />
+        <path d="M 240 140 L 340 240 L 340 260 L 240 160 Z" fill="#1A1D23" />
+        <path d="M 240 180 L 340 280 L 340 300 L 240 200 Z" fill="#1A1D23" />
+        <path d="M 240 220 L 340 320 L 340 340 L 240 240 Z" fill="#1A1D23" />
+        <path d="M 240 260 L 340 360 L 340 380 L 240 280 Z" fill="#1A1D23" />
+    </g>
+
+    <!-- 보안카드 코드칸 -->
+    <rect x="142" y="215" width="30" height="22" rx="5" ry="5" fill="#C9CEE8" />
+    <rect x="180" y="215" width="30" height="22" rx="5" ry="5" fill="#4F5BD5" />
+    <rect x="218" y="215" width="30" height="22" rx="5" ry="5" fill="#C9CEE8" />
+    <rect x="142" y="247" width="30" height="22" rx="5" ry="5" fill="#4F5BD5" />
+    <rect x="180" y="247" width="30" height="22" rx="5" ry="5" fill="#C9CEE8" />
+    <rect x="218" y="247" width="30" height="22" rx="5" ry="5" fill="#C9CEE8" />
+</svg>

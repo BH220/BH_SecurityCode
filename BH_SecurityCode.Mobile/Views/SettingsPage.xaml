@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:SettingsViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,18,20,28" Spacing="20">
+
+                <Label Style="{StaticResource TextTitle}" Text="설정" />
+
+                <!--  ── 서버 ──  -->
+                <VerticalStackLayout Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="API 서버" />
+
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Border Style="{StaticResource InputShell}" Background="{AppThemeBinding Light={StaticResource LtSurfaceSunken}, Dark={StaticResource DkSurfaceSunken}}">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                    <Path
+                                        Grid.Column="0"
+                                        Data="{x:Static m:Icons.Server}"
+                                        HeightRequest="18"
+                                        Style="{StaticResource IconMuted}"
+                                        WidthRequest="18" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        IsSpellCheckEnabled="False"
+                                        IsTextPredictionEnabled="False"
+                                        Keyboard="Url"
+                                        Placeholder="https://api.bhsoft.com"
+                                        Text="{Binding ServerAddress}" />
+                                </Grid>
+                            </Border>
+
+                            <Label
+                                IsVisible="{Binding HasServerError}"
+                                LineBreakMode="WordWrap"
+                                Style="{StaticResource TextDanger}"
+                                Text="{Binding ServerError}" />
+
+                            <Button
+                                Command="{Binding SaveServerCommand}"
+                                Style="{StaticResource ButtonSecondary}"
+                                Text="서버 주소 저장" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--  ── 보안 ──  -->
+                <VerticalStackLayout Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="보안" />
+
+                    <Border Style="{StaticResource CardFlat}">
+                        <VerticalStackLayout>
+                            <!--  민감 정보 가리기  -->
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.EyeOff}"
+                                    Style="{StaticResource IconMuted}" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="번호 가리기" />
+                                    <Label Style="{StaticResource TextMicro}" Text="계좌·카드·주민번호를 가립니다" />
+                                </VerticalStackLayout>
+                                <Switch
+                                    Grid.Column="2"
+                                    IsToggled="{Binding MaskSensitive}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <!--  자동 로그인  -->
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Check}"
+                                    Style="{StaticResource IconMuted}" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="자동 로그인" />
+                                    <Label Style="{StaticResource TextMicro}" Text="암호화 저장소에 보관합니다" />
+                                </VerticalStackLayout>
+                                <Switch
+                                    Grid.Column="2"
+                                    IsToggled="{Binding AutoLogin}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <!--  자동 잠금  -->
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+                                ColumnSpacing="10">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Clock}"
+                                    Style="{StaticResource IconMuted}" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="자동 잠금" />
+                                    <Label Style="{StaticResource TextMicro}" Text="서버 설정이 없을 때 적용" />
+                                </VerticalStackLayout>
+
+                                <Border
+                                    Grid.Column="2"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="32"
+                                    Background="{AppThemeBinding Light={StaticResource LtSurfaceSunken}, Dark={StaticResource DkSurfaceSunken}}">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Style="{StaticResource TextCallout}"
+                                        Text="−"
+                                        VerticalOptions="Center" />
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding LockShorterCommand}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+
+                                <Label
+                                    Grid.Column="3"
+                                    HorizontalTextAlignment="Center"
+                                    Style="{StaticResource TextBodyStrong}"
+                                    Text="{Binding LockMinutesText}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="48" />
+
+                                <Border
+                                    Grid.Column="4"
+                                    HeightRequest="32"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="32"
+                                    Background="{AppThemeBinding Light={StaticResource LtSurfaceSunken}, Dark={StaticResource DkSurfaceSunken}}">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Style="{StaticResource TextCallout}"
+                                        Text="+"
+                                        VerticalOptions="Center" />
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding LockLongerCommand}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--  ── 이미지 캐시 ──  -->
+                <VerticalStackLayout Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="이미지 캐시" />
+
+                    <Border Style="{StaticResource CardFlat}">
+                        <VerticalStackLayout>
+                            <!--  SD카드 저장  -->
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Folder}"
+                                    Style="{StaticResource IconMuted}" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="SD카드에 저장" />
+                                    <Label Style="{StaticResource TextMicro}" Text="{Binding SdCardHint}" />
+                                </VerticalStackLayout>
+                                <Switch
+                                    Grid.Column="2"
+                                    IsEnabled="{Binding IsSdCardAvailable}"
+                                    IsToggled="{Binding CacheOnSdCard}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <!--  사용량 · 비우기  -->
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Image}"
+                                    Style="{StaticResource IconMuted}" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="{Binding CacheUsageText}" />
+                                    <Label Style="{StaticResource TextMicro}" Text="받아둔 사진은 다시 내려받지 않습니다" />
+                                </VerticalStackLayout>
+                                <Button
+                                    Grid.Column="2"
+                                    Command="{Binding ClearCacheCommand}"
+                                    FontSize="13"
+                                    HeightRequest="34"
+                                    Padding="14,0"
+                                    Style="{StaticResource ButtonGhost}"
+                                    Text="비우기"
+                                    VerticalOptions="Center" />
+                            </Grid>
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <!--  실제 경로  -->
+                            <VerticalStackLayout Padding="15,12" Spacing="3">
+                                <Label Style="{StaticResource TextMicro}" Text="저장 위치" />
+                                <Label
+                                    LineBreakMode="CharacterWrap"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding CachePath}" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--  ── 계정 ──  -->
+                <VerticalStackLayout Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="계정" />
+
+                    <Border Style="{StaticResource CardFlat}">
+                        <VerticalStackLayout>
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Border
+                                    Grid.Column="0"
+                                    Background="{AppThemeBinding Light={StaticResource LtAccentSoft}, Dark={StaticResource DkAccentSoft}}"
+                                    HeightRequest="38"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    WidthRequest="38">
+                                    <Path
+                                        Data="{x:Static m:Icons.User}"
+                                        HeightRequest="20"
+                                        Style="{StaticResource IconAccent}"
+                                        WidthRequest="20"
+                                        HorizontalOptions="Center" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TextBodyStrong}" Text="{Binding Session.UserName}" />
+                                    <Label Style="{StaticResource TextMicro}" Text="{Binding Session.UserId}" />
+                                </VerticalStackLayout>
+                                <Border Grid.Column="2" Style="{StaticResource PillAccent}">
+                                    <Label Style="{StaticResource TextAccent}" Text="{Binding Session.RemainingText}" />
+                                </Border>
+                            </Grid>
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <Grid
+                                Padding="15,13"
+                                ColumnDefinitions="Auto,*"
+                                ColumnSpacing="12">
+                                <Path
+                                    Grid.Column="0"
+                                    Data="{x:Static m:Icons.Logout}"
+                                    HeightRequest="20"
+                                    Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                                    StrokeLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeThickness="1.7"
+                                    WidthRequest="20"
+                                    Aspect="Uniform"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource TextBodyStrong}"
+                                    Text="로그아웃"
+                                    TextColor="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                                    VerticalOptions="Center" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SignOutCommand}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--  ── 정보 ──  -->
+                <VerticalStackLayout Spacing="9">
+                    <Label Style="{StaticResource TextSection}" Text="정보" />
+                    <Border Style="{StaticResource CardFlat}">
+                        <VerticalStackLayout>
+                            <Grid Padding="15,12" ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Style="{StaticResource TextBody}" Text="버전" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding AppVersion}" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Divider}" />
+                            <Grid Padding="15,12" ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Style="{StaticResource TextBody}" Text="패키지" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding PackageName}" />
+                            </Grid>
+                            <BoxView Style="{StaticResource Divider}" />
+                            <Grid Padding="15,12" ColumnDefinitions="Auto,*">
+                                <Label Grid.Column="0" Style="{StaticResource TextBody}" Text="기기" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Style="{StaticResource TextCaption}"
+                                    Text="{Binding DeviceText}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  토스트  -->
+        <Border
+            Margin="24,0,24,20"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

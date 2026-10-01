@@ -1,0 +1,111 @@
+<Window x:Class="BH_SecurityCode.Views.Site.SiteEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:BH_SecurityCode.Helpers"
+        xmlns:vm="clr-namespace:BH_SecurityCode.ViewModels.Site"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:SiteEditViewModel}"
+        Style="{StaticResource DarkDialog}"
+        Title="{Binding Title}"
+        Width="580"
+        SizeToContent="Height"
+        helpers:DialogBehavior.DialogResult="{Binding DialogResult}">
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding CloseCommand}" />
+    </Window.InputBindings>
+
+    <DockPanel Margin="20">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+            <Button Content="저장 후 계속" Command="{Binding SaveContinueCommand}" MinWidth="110" />
+            <Button Content="저장" Style="{StaticResource AccentButton}" Command="{Binding SaveCommand}" MinWidth="90" Margin="8,0,0,0" />
+            <Button Content="닫기" Command="{Binding CloseCommand}" MinWidth="90" Margin="8,0,0,0" />
+        </StackPanel>
+
+        <StackPanel>
+            <GroupBox Header="기본 정보">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Style="{StaticResource RequiredLabel}"><Run Text="사이트명" /><Run Text=" *" Foreground="{StaticResource DangerBrush}" /></TextBlock>
+                    <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="150" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 MaxLength="100"
+                                 helpers:FocusExtension.IsFocused="{Binding IsNameFocused}" />
+                        <TextBlock Grid.Column="2" Text="소유자" Style="{StaticResource FieldLabel}" MinWidth="0" />
+                        <ComboBox Grid.Column="3" ItemsSource="{Binding Owners}" SelectedItem="{Binding SelectedOwner}" DisplayMemberPath="NmCode" Tag="선택" />
+                    </Grid>
+
+                    <TextBlock Grid.Row="1" Style="{StaticResource RequiredLabel}"><Run Text="주소" /><Run Text=" *" Foreground="{StaticResource DangerBrush}" /></TextBlock>
+                    <Grid Grid.Row="1" Grid.Column="1" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" MaxLength="200" />
+                        <Button Grid.Column="1" Command="{Binding OpenSiteCommand}" ToolTip="브라우저로 열기" Margin="8,0,0,0" MinWidth="0" Padding="10,4">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="pack://application:,,,/Assets/Images/open_site.png" Width="16" Height="16" />
+                                <TextBlock Text="바로가기" Margin="6,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock Grid.Row="2" Text="메모" Style="{StaticResource FieldLabel}" VerticalAlignment="Top" Margin="0,6,12,0" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Style="{StaticResource MultilineTextBox}"
+                             Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}"
+                             MaxLength="200"
+                             MinHeight="64" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="할당 계정 정보" Margin="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <TextBlock Style="{StaticResource SubtitleText}" VerticalAlignment="Center">
+                            <Run Text="계정 " /><Run Text="{Binding Accounts.Count, Mode=OneWay}" /><Run Text="개 · 첫번째 계정이 대표아이디로 표시됩니다." />
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="보기" Style="{StaticResource ToolButton}" Command="{Binding ViewAccountCommand}" />
+                            <Button Content="추가" Style="{StaticResource ToolButton}" Command="{Binding AddAccountCommand}" />
+                            <Button Content="삭제" Style="{StaticResource ToolButton}" Command="{Binding DeleteAccountCommand}" />
+                        </StackPanel>
+                    </Grid>
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding Accounts}"
+                              SelectedItem="{Binding SelectedAccount}"
+                              MinHeight="150"
+                              MaxHeight="220"
+                              helpers:DataGridBehavior.RowDoubleClickCommand="{Binding ViewAccountCommand}">
+                        <DataGrid.Columns>
+                            <!--  항목: AccountItemInfo (account_detail_num / id / pw / status). 계정별 비고는 API 에 없다  -->
+                            <DataGridTextColumn Header="아이디" Binding="{Binding id}" Width="*" />
+                            <DataGridTextColumn Header="비밀번호" Binding="{Binding pw}" Width="*" FontFamily="{StaticResource MonoFont}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </DockPanel>
+</Window>

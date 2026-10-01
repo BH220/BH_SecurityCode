@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:LoginViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <Grid Padding="24,40,24,28" RowDefinitions="Auto,*,Auto">
+
+            <!--  브랜드  -->
+            <VerticalStackLayout Grid.Row="0" Spacing="16">
+                <Border
+                    HeightRequest="76"
+                    HorizontalOptions="Start"
+                    StrokeShape="RoundRectangle 22"
+                    StrokeThickness="0"
+                    WidthRequest="76">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="#6570E6" />
+                            <GradientStop Offset="1" Color="#3540A8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <!--  런처 아이콘과 같은 마크 (Resources/Images/brandmark.svg)  -->
+                    <Image
+                        Aspect="AspectFit"
+                        HeightRequest="48"
+                        HorizontalOptions="Center"
+                        Source="brandmark.png"
+                        VerticalOptions="Center"
+                        WidthRequest="48" />
+                </Border>
+
+                <VerticalStackLayout Spacing="4">
+                    <Label Style="{StaticResource TextDisplay}" Text="BH 보안코드" />
+                    <Label Style="{StaticResource TextCallout}" Text="보안카드 · 통장 · 카드 · 신분증 · 계정을 한곳에서" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <!--  로그인 입력  -->
+            <VerticalStackLayout
+                Grid.Row="1"
+                Margin="0,32,0,0"
+                Spacing="12"
+                VerticalOptions="Center">
+
+                <Label Style="{StaticResource TextSection}" Text="로그인" />
+
+                <Border Style="{StaticResource InputShell}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.User}"
+                            HeightRequest="19"
+                            Style="{StaticResource IconMuted}"
+                            WidthRequest="19" />
+                        <Entry
+                            Grid.Column="1"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            Placeholder="아이디"
+                            ReturnType="Next"
+                            Text="{Binding UserId}" />
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource InputShell}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.Lock}"
+                            HeightRequest="19"
+                            Style="{StaticResource IconMuted}"
+                            WidthRequest="19" />
+                        <Entry
+                            Grid.Column="1"
+                            IsPassword="True"
+                            Placeholder="비밀번호"
+                            ReturnCommand="{Binding SignInCommand}"
+                            ReturnType="Go"
+                            Text="{Binding Password}" />
+                    </Grid>
+                </Border>
+
+                <!--  자동 로그인  -->
+                <Grid Margin="4,4,2,0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                    <Path
+                        Grid.Column="0"
+                        Data="{x:Static m:Icons.Check}"
+                        HeightRequest="17"
+                        Style="{StaticResource IconMuted}"
+                        WidthRequest="17" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                        <Label Style="{StaticResource TextBody}" Text="자동 로그인" />
+                        <Label Style="{StaticResource TextMicro}" Text="다음부터 바로 들어갑니다" />
+                    </VerticalStackLayout>
+                    <Switch
+                        Grid.Column="2"
+                        IsToggled="{Binding AutoLogin}"
+                        VerticalOptions="Center" />
+                </Grid>
+
+                <Grid IsVisible="{Binding HasError}" ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                    <Path
+                        Grid.Column="0"
+                        Data="{x:Static m:Icons.Warning}"
+                        HeightRequest="16"
+                        Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                        StrokeLineCap="Round"
+                        StrokeLineJoin="Round"
+                        StrokeThickness="1.7"
+                        WidthRequest="16"
+                        Aspect="Uniform"
+                        VerticalOptions="Start" />
+                    <Label
+                        Grid.Column="1"
+                        LineBreakMode="WordWrap"
+                        Style="{StaticResource TextDanger}"
+                        Text="{Binding ErrorText}" />
+                </Grid>
+
+                <Button
+                    Margin="0,8,0,0"
+                    Command="{Binding SignInCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}"
+                    Text="로그인" />
+
+                <Grid
+                    ColumnDefinitions="Auto,Auto"
+                    ColumnSpacing="9"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsBusy}">
+                    <ActivityIndicator
+                        Grid.Column="0"
+                        HeightRequest="18"
+                        IsRunning="{Binding IsBusy}"
+                        WidthRequest="18" />
+                    <Label
+                        Grid.Column="1"
+                        IsVisible="{Binding IsAutoSigningIn}"
+                        Style="{StaticResource TextCaption}"
+                        Text="저장된 정보로 로그인 중"
+                        VerticalOptions="Center" />
+                </Grid>
+
+                <!--  서버 주소  -->
+                <Border Margin="0,12,0,0" Style="{StaticResource CardFlat}">
+                    <Grid
+                        Padding="14,12"
+                        ColumnDefinitions="Auto,*,Auto"
+                        ColumnSpacing="12">
+                        <Path
+                            Grid.Column="0"
+                            Data="{x:Static m:Icons.Server}"
+                            Style="{StaticResource IconMuted}" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Style="{StaticResource TextMicro}" Text="API 서버" />
+                            <Label Style="{StaticResource TextBody}" Text="{Binding ServerText}" />
+                        </VerticalStackLayout>
+                        <Path
+                            Grid.Column="2"
+                            Data="{x:Static m:Icons.ChevronRight}"
+                            Style="{StaticResource IconChevron}" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenServerSettingCommand}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <Label
+                Grid.Row="2"
+                HorizontalOptions="Center"
+                Style="{StaticResource TextMicro}"
+                Text="BH Soft · BH Security Code Mobile" />
+        </Grid>
+    </ScrollView>
+</ContentPage>

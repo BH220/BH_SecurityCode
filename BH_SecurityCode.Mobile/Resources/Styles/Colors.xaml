@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<!--
+    테마 "페이퍼 인디고 · 모바일"
+    WPF(BH_SecurityCode/Themes/Colors.xaml)의 색상 토큰을 모바일용으로 옮기고 다크 팔레트를 추가했다.
+    화면에서는 이 파일의 색을 직접 쓰지 않고 Styles.xaml 의 AppThemeBinding 을 거친다.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--  ── 라이트 ─────────────────────────────────────────  -->
+    <Color x:Key="LtBg">#F3F4F8</Color>
+    <Color x:Key="LtSurface">#FFFFFF</Color>
+    <Color x:Key="LtSurfaceAlt">#F8F9FB</Color>
+    <Color x:Key="LtSurfaceSunken">#EDEFF4</Color>
+    <Color x:Key="LtBorder">#E4E7ED</Color>
+    <Color x:Key="LtBorderStrong">#CFD4DE</Color>
+    <Color x:Key="LtText">#1A1D23</Color>
+    <Color x:Key="LtTextMuted">#6B7280</Color>
+    <Color x:Key="LtTextSubtle">#98A0AD</Color>
+    <Color x:Key="LtTextOnAccent">#FFFFFF</Color>
+
+    <!--  ── 다크 ───────────────────────────────────────────  -->
+    <Color x:Key="DkBg">#0F1116</Color>
+    <Color x:Key="DkSurface">#191C23</Color>
+    <Color x:Key="DkSurfaceAlt">#20242C</Color>
+    <Color x:Key="DkSurfaceSunken">#12151A</Color>
+    <Color x:Key="DkBorder">#2B303A</Color>
+    <Color x:Key="DkBorderStrong">#3B424E</Color>
+    <Color x:Key="DkText">#ECEEF3</Color>
+    <Color x:Key="DkTextMuted">#9AA2AF</Color>
+    <Color x:Key="DkTextSubtle">#6C7480</Color>
+    <Color x:Key="DkTextOnAccent">#0F1116</Color>
+
+    <!--  ── 강조색 (WPF AccentColor 계열)  ─────────────────  -->
+    <Color x:Key="LtAccent">#4F5BD5</Color>
+    <Color x:Key="LtAccentPressed">#3540A8</Color>
+    <Color x:Key="LtAccentSoft">#ECEEFB</Color>
+    <Color x:Key="DkAccent">#8B94F2</Color>
+    <Color x:Key="DkAccentPressed">#A5ACF6</Color>
+    <Color x:Key="DkAccentSoft">#22263A</Color>
+
+    <!--  ── 상태  ──────────────────────────────────────────  -->
+    <Color x:Key="LtDanger">#D9363E</Color>
+    <Color x:Key="LtDangerSoft">#FDE8E9</Color>
+    <Color x:Key="LtWarning">#B96B00</Color>
+    <Color x:Key="LtWarningSoft">#FFF3E0</Color>
+    <Color x:Key="LtSuccess">#1F8A5B</Color>
+    <Color x:Key="LtSuccessSoft">#E3F5EC</Color>
+    <Color x:Key="DkDanger">#FF7A7A</Color>
+    <Color x:Key="DkDangerSoft">#33201F</Color>
+    <Color x:Key="DkWarning">#F0B040</Color>
+    <Color x:Key="DkWarningSoft">#2E2618</Color>
+    <Color x:Key="DkSuccess">#4ADE9B</Color>
+    <Color x:Key="DkSuccessSoft">#16281F</Color>
+
+    <!--  ── 카테고리별 색 (홈 타일 · 목록 배지 · 상세 헤더)  ─  -->
+    <Color x:Key="CatCode">#4F5BD5</Color>
+    <Color x:Key="CatCodeSoft">#EAECFB</Color>
+    <Color x:Key="CatCodeSoftDk">#20243A</Color>
+
+    <Color x:Key="CatBook">#0E8F7E</Color>
+    <Color x:Key="CatBookSoft">#E1F4F1</Color>
+    <Color x:Key="CatBookSoftDk">#132A28</Color>
+
+    <Color x:Key="CatCard">#B93B8F</Color>
+    <Color x:Key="CatCardSoft">#FAE7F3</Color>
+    <Color x:Key="CatCardSoftDk">#2E1A28</Color>
+
+    <Color x:Key="CatId">#B77400</Color>
+    <Color x:Key="CatIdSoft">#FCF1DC</Color>
+    <Color x:Key="CatIdSoftDk">#2C2415</Color>
+
+    <Color x:Key="CatSite">#2A6FDB</Color>
+    <Color x:Key="CatSiteSoft">#E4EDFB</Color>
+    <Color x:Key="CatSiteSoftDk">#151F32</Color>
+
+    <Color x:Key="Transparent">Transparent</Color>
+
+</ResourceDictionary>

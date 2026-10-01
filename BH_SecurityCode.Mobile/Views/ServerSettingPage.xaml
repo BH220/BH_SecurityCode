@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.ServerSettingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:ServerSettingViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,12,20,28" Spacing="18">
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                <Border
+                    Grid.Column="0"
+                    Background="Transparent"
+                    HeightRequest="40"
+                    StrokeThickness="0"
+                    WidthRequest="40">
+                    <Path Data="{x:Static m:Icons.ChevronLeft}" Style="{StaticResource IconStroke}" HorizontalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+                <Label
+                    Grid.Column="1"
+                    Style="{StaticResource TextTitle}"
+                    Text="서버 주소"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <Label
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextCallout}"
+                Text="앱이 접속할 BHS API 서버 주소입니다. 경로 없이 호스트(필요하면 포트)까지만 입력하세요. https 만 사용할 수 있습니다." />
+
+            <Border Style="{StaticResource InputShell}">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Path
+                        Grid.Column="0"
+                        Data="{x:Static m:Icons.Server}"
+                        HeightRequest="18"
+                        Style="{StaticResource IconMuted}"
+                        WidthRequest="18" />
+                    <Entry
+                        Grid.Column="1"
+                        ClearButtonVisibility="WhileEditing"
+                        IsSpellCheckEnabled="False"
+                        IsTextPredictionEnabled="False"
+                        Keyboard="Url"
+                        Placeholder="https://api.bhsoft.com"
+                        ReturnCommand="{Binding SaveCommand}"
+                        ReturnType="Done"
+                        Text="{Binding Address}" />
+                </Grid>
+            </Border>
+
+            <Label
+                IsVisible="{Binding HasError}"
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextDanger}"
+                Text="{Binding ErrorText}" />
+
+            <VerticalStackLayout Spacing="9">
+                <Label Style="{StaticResource TextSection}" Text="예시" />
+                <Border Style="{StaticResource CardFlat}">
+                    <VerticalStackLayout>
+                        <Grid Padding="15,12" ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                Style="{StaticResource TextMono}"
+                                FontSize="13.5"
+                                Text="https://api.bhsoft.com" />
+                            <Label Grid.Column="1" Style="{StaticResource TextAccent}" Text="사용" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding UseSampleCommand}" CommandParameter="https://api.bhsoft.com" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <BoxView Style="{StaticResource Divider}" />
+                        <Grid Padding="15,12" ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                Style="{StaticResource TextMono}"
+                                FontSize="13.5"
+                                Text="https://bhs.bhsoft.co.kr" />
+                            <Label Grid.Column="1" Style="{StaticResource TextAccent}" Text="사용" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding UseSampleCommand}" CommandParameter="https://bhs.bhsoft.co.kr" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <Button Command="{Binding SaveCommand}" Text="저장" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

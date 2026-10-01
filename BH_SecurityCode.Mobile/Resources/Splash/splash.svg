@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- 스플래시. 앱 아이콘과 같은 마크지만 잘림이 없으므로 캔버스를 더 넓게 쓴다. -->
+<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <clipPath id="splashBand">
+            <rect x="300" y="146" width="82" height="176" rx="12" ry="12" />
+        </clipPath>
+    </defs>
+
+    <path
+        d="M 78 82 H 148 a 16 16 0 0 1 11 5 l 31 31 H 378 a 26 26 0 0 1 26 26 V 324 a 26 26 0 0 1 -26 26 H 78 a 26 26 0 0 1 -26 -26 V 108 a 26 26 0 0 1 26 -26 Z"
+        fill="#FFFFFF" />
+
+    <g clip-path="url(#splashBand)">
+        <rect x="300" y="146" width="82" height="176" fill="#F5B301" />
+        <path d="M 270 10 L 410 150 L 410 182 L 270 42 Z" fill="#1A1D23" />
+        <path d="M 270 74 L 410 214 L 410 246 L 270 106 Z" fill="#1A1D23" />
+        <path d="M 270 138 L 410 278 L 410 310 L 270 170 Z" fill="#1A1D23" />
+        <path d="M 270 202 L 410 342 L 410 374 L 270 234 Z" fill="#1A1D23" />
+        <path d="M 270 266 L 410 406 L 410 438 L 270 298 Z" fill="#1A1D23" />
+    </g>
+
+    <rect x="96" y="188" width="52" height="38" rx="8" ry="8" fill="#C9CEE8" />
+    <rect x="160" y="188" width="52" height="38" rx="8" ry="8" fill="#4F5BD5" />
+    <rect x="224" y="188" width="52" height="38" rx="8" ry="8" fill="#C9CEE8" />
+    <rect x="96" y="244" width="52" height="38" rx="8" ry="8" fill="#4F5BD5" />
+    <rect x="160" y="244" width="52" height="38" rx="8" ry="8" fill="#C9CEE8" />
+    <rect x="224" y="244" width="52" height="38" rx="8" ry="8" fill="#C9CEE8" />
+</svg>

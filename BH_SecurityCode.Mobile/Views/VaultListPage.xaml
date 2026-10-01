@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BH_SecurityCode.Mobile.Views.VaultListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:BH_SecurityCode.Mobile.Converters"
+    xmlns:m="clr-namespace:BH_SecurityCode.Mobile.Models"
+    xmlns:vm="clr-namespace:BH_SecurityCode.Mobile.ViewModels"
+    x:DataType="vm:VaultListViewModel"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <conv:InvertedBool x:Key="Not" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!--  ── 헤더 ──  -->
+        <Grid
+            Grid.Row="0"
+            Padding="14,12,20,10"
+            ColumnDefinitions="Auto,Auto,*,Auto"
+            ColumnSpacing="10">
+
+            <Border
+                Grid.Column="0"
+                HeightRequest="40"
+                StrokeShape="RoundRectangle 13"
+                StrokeThickness="0"
+                WidthRequest="40"
+                Background="Transparent">
+                <Path Data="{x:Static m:Icons.ChevronLeft}" Style="{StaticResource IconStroke}" HorizontalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border
+                Grid.Column="1"
+                Background="{Binding Meta.Soft}"
+                HeightRequest="40"
+                StrokeShape="RoundRectangle 13"
+                StrokeThickness="0"
+                WidthRequest="40">
+                <Path
+                    Data="{Binding Meta.Icon}"
+                    HeightRequest="21"
+                    Stroke="{Binding Meta.Accent}"
+                    StrokeLineCap="Round"
+                    StrokeLineJoin="Round"
+                    StrokeThickness="1.7"
+                    WidthRequest="21"
+                    Aspect="Uniform"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout Grid.Column="2" Spacing="1" VerticalOptions="Center">
+                <Label Style="{StaticResource TextHeadline}" Text="{Binding Meta.Title}" />
+                <Label Style="{StaticResource TextMicro}" Text="{Binding Meta.Caption}" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="3" Style="{StaticResource Pill}">
+                <Label Style="{StaticResource TextCaption}" Text="{Binding Items.Count, StringFormat='{0}건'}" />
+            </Border>
+        </Grid>
+
+        <!--  ── 검색 + 소유자 필터 ──  -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Border Margin="20,4,20,0" Style="{StaticResource InputShell}">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Path
+                        Grid.Column="0"
+                        Data="{x:Static m:Icons.Search}"
+                        HeightRequest="18"
+                        Style="{StaticResource IconMuted}"
+                        WidthRequest="18" />
+                    <Entry
+                        Grid.Column="1"
+                        ClearButtonVisibility="WhileEditing"
+                        Placeholder="이름 · 소유자 · 번호 검색"
+                        Text="{Binding SearchText}" />
+                </Grid>
+            </Border>
+
+            <CollectionView
+                HeightRequest="38"
+                ItemsSource="{Binding Owners}"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="8" Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ChipViewModel">
+                        <Border
+                            Padding="14,7"
+                            StrokeShape="RoundRectangle 999"
+                            StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource LtBorder}, Dark={StaticResource DkBorder}}"
+                            Background="{AppThemeBinding Light={StaticResource LtSurface}, Dark={StaticResource DkSurface}}">
+                            <Border.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsSelected}"
+                                    TargetType="Border"
+                                    Value="True">
+                                    <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LtText}, Dark={StaticResource DkText}}" />
+                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LtText}, Dark={StaticResource DkText}}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+
+                            <Label
+                                FontSize="13"
+                                Style="{StaticResource TextCallout}"
+                                Text="{Binding Text}"
+                                VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding IsSelected}"
+                                        TargetType="Label"
+                                        Value="True">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=White, Dark=#191C23}" />
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VaultListViewModel}}, Path=SelectOwnerCommand, x:DataType=vm:VaultListViewModel}" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.Header>
+                    <BoxView BackgroundColor="Transparent" Color="Transparent" WidthRequest="20" />
+                </CollectionView.Header>
+                <CollectionView.Footer>
+                    <BoxView BackgroundColor="Transparent" Color="Transparent" WidthRequest="20" />
+                </CollectionView.Footer>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!--  ── 목록 ──  -->
+        <RefreshView
+            Grid.Row="2"
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.Header>
+                    <BoxView BackgroundColor="Transparent" Color="Transparent" HeightRequest="8" />
+                </CollectionView.Header>
+                <CollectionView.Footer>
+                    <BoxView BackgroundColor="Transparent" Color="Transparent" HeightRequest="92" />
+                </CollectionView.Footer>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:VaultRowViewModel">
+                        <Border Margin="20,0" Style="{StaticResource CardFlat}">
+                            <Grid RowDefinitions="Auto,Auto,Auto">
+
+                                <!--  제목 줄 (여기를 누르면 상세로)  -->
+                                <Grid
+                                    Grid.Row="0"
+                                    Padding="15,14"
+                                    ColumnDefinitions="Auto,*,Auto"
+                                    ColumnSpacing="12">
+                                    <Border
+                                        Grid.Column="0"
+                                        Background="{Binding Meta.Soft}"
+                                        HeightRequest="38"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Start"
+                                        WidthRequest="38">
+                                        <Path
+                                            Data="{Binding Meta.Icon}"
+                                            HeightRequest="20"
+                                            Stroke="{Binding Meta.Accent}"
+                                            StrokeLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeThickness="1.7"
+                                            WidthRequest="20"
+                                            Aspect="Uniform"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Style="{StaticResource TextBodyStrong}" Text="{Binding Title}" />
+                                        <Label Style="{StaticResource TextCaption}" Text="{Binding Subtitle}" />
+                                        <Label
+                                            IsVisible="{Binding HasNote}"
+                                            Style="{StaticResource TextMicro}"
+                                            Text="{Binding Note}" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="2"
+                                        Spacing="5"
+                                        VerticalOptions="Start">
+                                        <Border Style="{StaticResource Pill}">
+                                            <Label
+                                                FontSize="11.5"
+                                                Style="{StaticResource TextCaption}"
+                                                Text="{Binding OwnerName}" />
+                                        </Border>
+                                        <Border IsVisible="{Binding HasFlag}" Style="{StaticResource PillWarning}">
+                                            <Label
+                                                FontSize="11"
+                                                Text="{Binding Flag}"
+                                                TextColor="{AppThemeBinding Light={StaticResource LtWarning}, Dark={StaticResource DkWarning}}" />
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VaultListViewModel}}, Path=OpenCommand, x:DataType=vm:VaultListViewModel}" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+
+                                <BoxView
+                                    Grid.Row="1"
+                                    IsVisible="{Binding HasValue}"
+                                    Style="{StaticResource Divider}" />
+
+                                <!--  대표 값 줄  -->
+                                <Grid
+                                    Grid.Row="2"
+                                    Padding="15,11"
+                                    ColumnDefinitions="Auto,*,Auto,Auto"
+                                    ColumnSpacing="10"
+                                    IsVisible="{Binding HasValue}">
+                                    <Label
+                                        Grid.Column="0"
+                                        Style="{StaticResource TextMicro}"
+                                        Text="{Binding ValueLabel}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource TextMono}"
+                                        Text="{Binding DisplayValue}"
+                                        VerticalOptions="Center" />
+
+                                    <Border
+                                        Grid.Column="2"
+                                        HeightRequest="32"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        WidthRequest="32"
+                                        Background="Transparent">
+                                        <Grid>
+                                            <Path
+                                                Data="{x:Static m:Icons.Eye}"
+                                                HeightRequest="18"
+                                                IsVisible="{Binding IsRevealed, Converter={StaticResource Not}}"
+                                                Style="{StaticResource IconMuted}"
+                                                WidthRequest="18" />
+                                            <Path
+                                                Data="{x:Static m:Icons.EyeOff}"
+                                                HeightRequest="18"
+                                                IsVisible="{Binding IsRevealed}"
+                                                Style="{StaticResource IconAccent}"
+                                                WidthRequest="18" />
+                                        </Grid>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleRevealCommand}" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+
+                                    <Border
+                                        Grid.Column="3"
+                                        HeightRequest="32"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        WidthRequest="32"
+                                        Background="Transparent">
+                                        <Path
+                                            Data="{x:Static m:Icons.Copy}"
+                                            HeightRequest="17"
+                                            Style="{StaticResource IconMuted}"
+                                            WidthRequest="17" />
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding CopyValueCommand}" />
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!--  ── 서버 오류 ──  -->
+        <VerticalStackLayout
+            Grid.Row="2"
+            Padding="32,0"
+            IsVisible="{Binding HasError}"
+            Spacing="14"
+            VerticalOptions="Center">
+            <Path
+                Data="{x:Static m:Icons.Warning}"
+                HeightRequest="42"
+                Stroke="{AppThemeBinding Light={StaticResource LtDanger}, Dark={StaticResource DkDanger}}"
+                StrokeLineCap="Round"
+                StrokeLineJoin="Round"
+                StrokeThickness="1.6"
+                WidthRequest="42"
+                Aspect="Uniform"
+                HorizontalOptions="Center" />
+            <Label
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                LineBreakMode="WordWrap"
+                Style="{StaticResource TextCallout}"
+                Text="{Binding ErrorText}" />
+            <Button
+                Command="{Binding RetryCommand}"
+                HorizontalOptions="Center"
+                Style="{StaticResource ButtonSecondary}"
+                Text="다시 시도" />
+        </VerticalStackLayout>
+
+        <!--  ── 비어있음 ──  -->
+        <VerticalStackLayout
+            Grid.Row="2"
+            IsVisible="{Binding IsEmpty}"
+            Spacing="10"
+            VerticalOptions="Center">
+            <Path
+                Data="{Binding Meta.Icon}"
+                HeightRequest="44"
+                Opacity="0.35"
+                Style="{StaticResource IconMuted}"
+                WidthRequest="44"
+                HorizontalOptions="Center" />
+            <Label
+                HorizontalOptions="Center"
+                Style="{StaticResource TextCallout}"
+                Text="{Binding EmptyText}" />
+        </VerticalStackLayout>
+
+        <ActivityIndicator
+            Grid.Row="2"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+
+        <!--  ── 추가 버튼 ──  -->
+        <Border
+            Grid.Row="2"
+            Margin="0,0,20,22"
+            HeightRequest="56"
+            IsVisible="{Binding HasError, Converter={StaticResource Not}}"
+            HorizontalOptions="End"
+            StrokeShape="RoundRectangle 18"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            WidthRequest="56"
+            Background="{Binding Meta.Accent}">
+            <Path
+                Data="{x:Static m:Icons.Plus}"
+                HeightRequest="24"
+                Stroke="White"
+                StrokeLineCap="Round"
+                StrokeThickness="2.1"
+                WidthRequest="24"
+                Aspect="Uniform"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddCommand}" />
+            </Border.GestureRecognizers>
+        </Border>
+
+        <!--  토스트  -->
+        <Border
+            Grid.Row="2"
+            Margin="24,0,24,92"
+            Padding="16,11"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsToastVisible}"
+            StrokeShape="RoundRectangle 999"
+            StrokeThickness="0"
+            VerticalOptions="End"
+            Background="{AppThemeBinding Light=#1A1D23, Dark=#ECEEF3}">
+            <Label
+                Style="{StaticResource TextCaption}"
+                Text="{Binding ToastText}"
+                TextColor="{AppThemeBinding Light=White, Dark=#191C23}" />
+        </Border>
+    </Grid>
+</ContentPage>

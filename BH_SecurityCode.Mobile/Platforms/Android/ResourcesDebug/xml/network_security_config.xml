@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug 빌드 전용. 배포 APK 에는 들어가지 않는다.
+  (csproj 에서 Configuration 이 Debug 일 때만 Resources/xml/network_security_config.xml 자리에 들어간다)
+
+  PC 의 로컬 API 서버에 adb reverse 로 붙기 위한 예외다.
+  기기 입장에서 127.0.0.1 로 보이므로 단말 밖으로 나가는 트래픽이 아니고, 도청 대상이 아니다.
+  사내망(192.168.x.x) 처럼 실제로 네트워크를 타는 평문 주소는 여기서도 허용하지 않는다.
+-->
+<network-security-config>
+	<base-config cleartextTrafficPermitted="false">
+		<trust-anchors>
+			<certificates src="system" />
+		</trust-anchors>
+	</base-config>
+
+	<domain-config cleartextTrafficPermitted="true">
+		<domain includeSubdomains="false">127.0.0.1</domain>
+		<domain includeSubdomains="false">localhost</domain>
+		<!-- 에뮬레이터에서 호스트 PC 를 가리키는 주소 -->
+		<domain includeSubdomains="false">10.0.2.2</domain>
+	</domain-config>
+</network-security-config>
